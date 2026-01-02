@@ -215,13 +215,14 @@
           const resultDiv = document.getElementById("result");
           resultDiv.style.display = "block";
 
-          if (data.prediction === "Benign") {
-            resultDiv.className = "result benign";
-            resultDiv.innerText = "Prediction: Benign ✅";
-          } else {
-            resultDiv.className = "result malignant";
-            resultDiv.innerText = "Prediction: Malignant ❌";
-          }
+          if (data.prediction === 0) {
+    resultDiv.className = "result benign";
+    resultDiv.innerText = `Prediction (${data.model}): Benign ✅`;
+} else if (data.prediction === 1) {
+    resultDiv.className = "result malignant";
+    resultDiv.innerText = `Prediction (${data.model}): Malignant ❌`;
+}
+
         } catch (error) {
           alert(
             "Error connecting to backend. Make sure the backend is deployed and URL is correct."
