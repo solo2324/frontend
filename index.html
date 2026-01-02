@@ -3,177 +3,234 @@
   <head>
     <meta charset="UTF-8" />
     <title>Breast Cancer Predictor</title>
-    <link
-      href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600&display=swap"
-      rel="stylesheet"
-    />
     <style>
-      /* --- Body & Background --- */
+      @import url("https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap");
+
       body {
+        font-family: "Roboto", sans-serif;
+        background-color: #0d0d0d; /* dark black background */
         margin: 0;
         padding: 0;
-        font-family: "Montserrat", sans-serif;
-        background: linear-gradient(
-          135deg,
-          #f3f4f6,
-          #d1d5db
-        ); /* soft gradient background */
-        color: #333;
-        min-height: 100vh;
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-        justify-content: center;
-      }
-
-      h1 {
-        font-size: 2.5rem;
-        color: #6a0dad; /* purple accent */
-        margin-bottom: 25px;
-        text-align: center;
+        color: #fff;
       }
 
       .container {
-        background: white;
+        max-width: 500px; /* narrower container for vertical layout */
+        margin: 40px auto;
+        background-color: #1a1a1a; /* dark card */
+        padding: 30px 35px;
         border-radius: 20px;
-        box-shadow: 0 20px 40px rgba(0, 0, 0, 0.15);
-        padding: 35px 45px;
-        max-width: 750px;
-        width: 90%;
-        transition: transform 0.3s ease, box-shadow 0.3s ease;
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.7);
       }
 
-      .container:hover {
-        transform: translateY(-5px);
-        box-shadow: 0 25px 50px rgba(0, 0, 0, 0.2);
+      h1 {
+        text-align: center;
+        color: #a64ca6; /* purple header */
+        text-shadow: 2px 2px 5px #4b0082;
+        margin-bottom: 25px;
       }
 
-      p {
-        font-size: 1.1rem;
-        margin-bottom: 10px;
+      form {
+        display: grid;
+        grid-template-columns: 1fr; /* single column vertical */
+        gap: 5px; /* very small gap between inputs */
       }
 
-      input[type="text"] {
+      label {
+        font-weight: bold;
+        margin-bottom: 3px;
+        display: block;
+        color: #ddd;
+      }
+
+      input[type="number"] {
+        padding: 8px;
+        border-radius: 8px;
+        border: 2px solid #6a0dad;
+        background-color: #111;
+        color: #fff;
         width: 100%;
-        padding: 14px;
-        border-radius: 10px;
-        border: 1px solid #ccc;
-        font-size: 16px;
-        margin-bottom: 20px;
-        transition: 0.3s;
+        box-shadow: 0 4px 12px rgba(106, 13, 173, 0.5);
+        transition: all 0.3s ease;
       }
 
-      input[type="text"]:focus {
+      input[type="number"]:focus {
         outline: none;
-        border-color: #6a0dad;
-        box-shadow: 0 0 10px rgba(106, 13, 173, 0.3);
+        border-color: #9b30ff;
+        box-shadow: 0 0 10px #9b30ff, 0 4px 15px rgba(106, 13, 173, 0.6);
       }
 
       .buttons {
         display: flex;
-        justify-content: center;
-        gap: 15px;
-        flex-wrap: wrap;
+        justify-content: space-between;
+        margin-top: 20px;
+        gap: 10px;
       }
 
       button {
-        padding: 12px 25px;
+        padding: 12px 20px;
         border: none;
         border-radius: 12px;
         font-size: 16px;
-        font-weight: 600;
+        font-weight: bold;
         cursor: pointer;
-        background: linear-gradient(45deg, #6a0dad, #9b30ff);
         color: #fff;
+        background: linear-gradient(45deg, #9b30ff, #a64ca6);
+        box-shadow: 0 5px 20px rgba(155, 48, 255, 0.6);
         transition: all 0.3s ease;
-        box-shadow: 0 8px 20px rgba(0, 0, 0, 0.2);
+        flex: 1;
       }
 
       button:hover {
-        transform: translateY(-3px);
-        box-shadow: 0 12px 25px rgba(0, 0, 0, 0.35);
+        transform: translateY(-2px);
+        box-shadow: 0 8px 25px rgba(155, 48, 255, 0.8);
       }
 
-      #result {
+      .result {
         margin-top: 25px;
-        font-size: 1.5rem;
-        font-weight: 700;
         text-align: center;
-        min-height: 40px;
+        padding: 20px;
+        font-size: 20px;
+        border-radius: 15px;
+        font-weight: bold;
+        display: none;
+        box-shadow: 0 8px 20px rgba(0, 0, 0, 0.7);
       }
 
-      .warning {
-        color: #dc2626; /* red warning */
+      .benign {
+        background-color: #1e4620;
+        color: #7fff7f;
+        text-shadow: 1px 1px 5px #00ff00;
       }
 
-      /* Subtle animation for result */
-      #result.show {
-        animation: fadeIn 0.5s ease forwards;
+      .malignant {
+        background-color: #4d0000;
+        color: #ff6b6b;
+        text-shadow: 1px 1px 5px #ff0000;
       }
 
-      @keyframes fadeIn {
-        from {
-          opacity: 0;
-          transform: translateY(-10px);
+      /* Responsive for mobile */
+      @media (max-width: 600px) {
+        .container {
+          padding: 25px 20px;
         }
-        to {
-          opacity: 1;
-          transform: translateY(0);
+        .buttons {
+          flex-direction: column;
         }
       }
     </style>
   </head>
   <body>
-    <h1>💜 Breast Cancer Predictor</h1>
     <div class="container">
-      <p>Enter <strong>30 feature values</strong> separated by commas:</p>
-      <input id="features" placeholder="e.g., 17.99,10.38,122.8,..." />
-      <div class="buttons">
-        <button onclick="predict('logistic')">Logistic Regression</button>
-        <button onclick="predict('tree')">Decision Tree</button>
-      </div>
-      <p id="result"></p>
+      <h1>Breast Cancer Predictor</h1>
+      <form id="predictForm">
+        <!-- 30 Inputs -->
+        <script>
+          const featureNames = [
+            "Radius_mean",
+            "Texture_mean",
+            "Perimeter_mean",
+            "Area_mean",
+            "Smoothness_mean",
+            "Compactness_mean",
+            "Concavity_mean",
+            "Concave_points_mean",
+            "Symmetry_mean",
+            "Fractal_dimension_mean",
+            "Radius_se",
+            "Texture_se",
+            "Perimeter_se",
+            "Area_se",
+            "Smoothness_se",
+            "Compactness_se",
+            "Concavity_se",
+            "Concave_points_se",
+            "Symmetry_se",
+            "Fractal_dimension_se",
+            "Radius_worst",
+            "Texture_worst",
+            "Perimeter_worst",
+            "Area_worst",
+            "Smoothness_worst",
+            "Compactness_worst",
+            "Concavity_worst",
+            "Concave_points_worst",
+            "Symmetry_worst",
+            "Fractal_dimension_worst",
+          ];
+
+          featureNames.forEach((name, index) => {
+            document.write(`
+                        <div>
+                            <label for="feature${index}">${name.replace(
+              /_/g,
+              " "
+            )}</label>
+                            <input type="number" id="feature${index}" required step="any" placeholder="Enter ${name.replace(
+              /_/g,
+              " "
+            )}">
+                        </div>
+                    `);
+          });
+        </script>
+
+        <div class="buttons">
+          <button type="button" onclick="predict('logistic')">
+            Predict Logistic
+          </button>
+          <button type="button" onclick="predict('tree')">Predict Tree</button>
+        </div>
+      </form>
+
+      <div id="result" class="result"></div>
     </div>
 
     <script>
-      const BACKEND_URL = "http://127.0.0.1:8000";;
+      const BACKEND_URL = "https://backend-yrmg.onrender.com";
+    
 
-      async function predict(model) {
-        const inputText = document.getElementById("features").value;
-        const featureValues = inputText
-          .split(",")
-          .map((x) => parseFloat(x.trim()));
-
-        const resultEl = document.getElementById("result");
-        resultEl.classList.remove("show");
-
-        if (featureValues.length !== 30 || featureValues.some(isNaN)) {
-          resultEl.innerHTML =
-            '<span class="warning">⚠ Please enter exactly 30 numeric values!</span>';
-          resultEl.classList.add("show");
-          return;
+      async function predict(modelType) {
+        const features = [];
+        for (let i = 0; i < 30; i++) {
+          const val = parseFloat(document.getElementById(`feature${i}`).value);
+          if (isNaN(val)) {
+            alert("Please fill all fields with numbers");
+            return;
+          }
+          features.push(val);
         }
 
+        const endpoint =
+          modelType === "logistic" ? "/predict/logistic" : "/predict/tree";
+
         try {
-          const response = await fetch(`${BACKEND_URL}/predict/${model}`, {
+          const response = await fetch(`${BACKEND_URL}${endpoint}`, {
             method: "POST",
             headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({ features: featureValues }),
+            body: JSON.stringify({ features: features }),
           });
 
           const data = await response.json();
-          const predictionText =
-            data.prediction === 1 ? "Benign ✅" : "Malignant ❌";
+          const resultDiv = document.getElementById("result");
+          resultDiv.style.display = "block";
 
-          resultEl.innerHTML = `Model: <strong>${data.model}</strong><br>Prediction: <strong>${predictionText}</strong>`;
-          resultEl.classList.add("show");
+          if (data.prediction === "Benign") {
+            resultDiv.className = "result benign";
+            resultDiv.innerText = "Prediction: Benign ✅";
+          } else {
+            resultDiv.className = "result malignant";
+            resultDiv.innerText = "Prediction: Malignant ❌";
+          }
         } catch (error) {
-          resultEl.innerHTML =
-            '<span class="warning">⚠ Error connecting to backend!</span>';
-          resultEl.classList.add("show");
+          alert(
+            "Error connecting to backend. Make sure the backend is deployed and URL is correct."
+          );
           console.error(error);
         }
       }
     </script>
   </body>
 </html>
+
+   
